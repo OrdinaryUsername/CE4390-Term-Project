@@ -15,6 +15,8 @@ def client_main(client=socket):
     while 1:
         #get the user's command
         cmd = input('Enter a command: ')
+        if cmd == 'X':
+            break
         #Convert command to protocol format for client_message
         #send command to server using client.s.send(client_message.encode())
         #recieve message from server using server_message = client.s.recv(1024)
@@ -31,6 +33,14 @@ def client_main(client=socket):
         client.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         #connect to the server
         client.s.connect((client.target_ip,int(client.target_port)))
+
+    #shut down the connection
+    client.s.shutdown(socket.SHUT_RDWR)
+    #close the socket
+    client.s.close()
+    #open the socket
+    client.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+
 
 #use client_main() as the main function
 if __name__ == "__main__":
