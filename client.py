@@ -3,7 +3,7 @@ import shutil
 
 class Client:
 
-    def main(client):
+    def client_main(client):
         #initialize client cocket
         client.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         #set the client's target ip address(server ip address)
