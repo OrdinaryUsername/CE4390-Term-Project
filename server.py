@@ -10,7 +10,8 @@ def server_main(server=socket):
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # get the server's ip address
     # ip = socket.gethostbyname(socket.gethostname())
-    host = socket.gethostbyname(socket.gethostname())
+    #host = socket.gethostbyname(socket.gethostname())
+    host = '10.0.0.1'
     print(socket.gethostname())
     # ip = input("Enter IP Address: ")
     # get the port number for the host

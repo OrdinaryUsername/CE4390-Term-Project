@@ -7,7 +7,8 @@ def client_main(client=socket):
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # set the client's target ip address(server ip address)
     # client.target_ip = input('Enter target ip: ')
-    target_ip = input('Enter target ip: ')
+    #target_ip = input('Enter target ip: ')
+    target_ip = '10.0.0.1'
     #target_ip = socket.gethostbyname("mininet-vm")
     # set the client's target port(server port)
     # client.target_port = input('Enter target port: ')
