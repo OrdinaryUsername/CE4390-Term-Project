@@ -1,5 +1,8 @@
 import socket
 import os
+import string
+import shutil
+
 
 def server_main(server=socket):
     #create and initialize server socket
@@ -18,18 +21,91 @@ def server_main(server=socket):
     while 1:
         #accept the connection request
         server.s.accept()
+
         #recieve message from client using client_message = server.recv(1024)
+        data = server.recv(1024)
+        #Add the data to the client message
+        client_message = data
+        data = server.recv(1024)
+        #while there is still data coming in
         #   Note: may need to use while 1 loop to get all of the message contents
         #   and break when no longer recieving anything
+        while data:
+            #add the data to the client message
+            client_message += data
+            #recieve the data
+            data = server.recv(1024)
+
+
         #decode server message using client_message.decode()
+        client_message.decode()
+
+        #split the client message to get the command type and parameters
+        # in separate strings in an array of strings
+        cmd = []
+        cmd = client_message.split(" ")
+        print(cmd)
+
         #do stuff based on the message contents and protocol format (flags, etc)
         #   Note: look at os library for file management functions??
         #   Note: look at shutil library for file copying??
-        #send message to the client using server.send(server_message.encode())
+        if cmd[0] == 'copy':
+            server_message = copy(cmd[1])
+            print(server_message)
+            server.send(server_message.encode())
+        elif cmd[0] == 'rename':
+            server_message = rename(cmd[1], cmd[2])
+            print(server_message)
+            server.send(server_message.encode())
+        elif cmd[0] == 'delete':
+            server_message = delete(cmd[1])
+            print(server_message)
+            server.send(server_message.encode())
+        elif cmd[0] == 'ld':
+            server_message = ld()
+            print(server_message)
+            server.send(server_message.encode())
+        elif cmd[0] == 'done':
+            server_message = 'done'
+            print(server_message)
+            server.send(server_message.encode())
+            #shutdown connection with client
+            server.shutdown(socket.SHUT_RDWR)
+            #close server socket
+            server.close()
+            break
+
         #shutdown connection with client
         server.shutdown(socket.SHUT_RDWR)
         #close server socket
         server.close()
+
+#Function to copy a file
+def copy(filename=string):
+    #do stuff for copying a file
+    #return message about success
+    print(filename)
+
+#Function to rename a file
+def rename(filename1=string, filename2=string):
+    print(filename1)
+    print(filename2)
+    #do stuff to rename filename1 as filename2
+    #return messages about success
+
+#Function to delete a file
+def delete(filename=string):
+    print(filename)
+    #do stuff to delete the file
+    #return message about success
+
+#Function to get the list of files from the directory
+def ld():
+    print("FIXME")
+    #Do stuff to send the list from directory
+    #return string of filenames in the directory
+    #or message about success
+    return "FIXME"
 
 #use server_main() as the main function
 if __name__ == "__main__":
