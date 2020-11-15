@@ -1,7 +1,7 @@
 import socket
 import shutil
 
-def client_main(client=socket):
+def client_main(client = socket):
     #initialize client cocket
     client.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
     #set the client's target ip address(server ip address)
@@ -10,13 +10,23 @@ def client_main(client=socket):
     client.target_port = input('Enter target port: ')
     #connect the client to the server
     client.s.connect((client.target_ip,int(client.target_port)))
-
+    
     #listen
     while 1:
+        print 'Instruction List:'
+        print '"copy[filename]" retrieves a copy of a file from the server.'
+        print '"rename[filename, newFileName]" renames a file from the server.'
+        print '"delete[filename]" deletes a file on the server.'
+        print '"ld" lists file directory on server.'
+        print '"done" quits program.'
+        
         #get the user's command
         cmd = input('Enter a command: ')
-        if cmd == 'X':
+        if cmd == 'ld':
+            sl()
             break
+        else if cmd == 'copy':
+            
         #Convert command to protocol format for client_message
         #send command to server using client.s.send(client_message.encode())
         #recieve message from server using server_message = client.s.recv(1024)
