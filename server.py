@@ -9,18 +9,15 @@ def server_main(server=socket):
     server.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
     #get the server's ip address
     #ip = socket.gethostbyname(socket.gethostname())
+    ip = input("Enter IP Address: ")
     #get the port number for the host
-    #port = int(input('Enter desired port: '))
+    port = int(input('Enter desired port: '))
     #bind the socket using the ip address and port number
-    #server.s.bind((ip,port))
-    server.s.bind(('',0))
-    host, port = server.s.getsockname()
+    server.s.bind((ip,port))
     #listen for connection requests
     server.s.listen(100)
 
-    #print('Listening on IP: '+ip+', '+str(port))
-    print(host)
-    print(port)
+    print('Listening on IP: '+ip+', '+str(port))
 
     while 1:
         #accept the connection request
