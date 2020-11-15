@@ -19,7 +19,8 @@ def server_main(server=socket):
     server.s.listen(100)
 
     #print('Listening on IP: '+ip+', '+str(port))
-    print('Listening on IP: '+host+', '+port)
+    print(host)
+    print(port)
 
     while 1:
         #accept the connection request
