@@ -2,7 +2,7 @@ import socket
 import shutil
 
 
-def client_main(client = server):
+def client_main(client=socket):
     
     #initialize client socket
     client.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
@@ -12,7 +12,7 @@ def client_main(client = server):
     client.target_port = input('Enter target port: ')
     #connect the client to the server
     client.s.connect((client.target_ip,int(client.target_port)))
-    
+    print("connected")
     #accepted cmds for input
     acceptedCmds = ['ld' , 'copy', 'rename', 'delete', 'done']
     

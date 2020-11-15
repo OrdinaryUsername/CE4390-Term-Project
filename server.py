@@ -8,22 +8,27 @@ def server_main(server=socket):
     #create and initialize server socket
     server.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
     #get the server's ip address
-    ip = socket.gethostbyname(socket.gethostname())
+    #ip = socket.gethostbyname(socket.gethostname())
     #get the port number for the host
-    port = int(input('Enter desired port: '))
+    #port = int(input('Enter desired port: '))
     #bind the socket using the ip address and port number
-    server.s.bind((ip,port))
+    #server.s.bind((ip,port))
+    server.s.bind(('',0))
+    host, port = server.s.getsockname()
     #listen for connection requests
     server.s.listen(100)
 
-    print('Listening on IP: '+ip+', '+str(port))
+    #print('Listening on IP: '+ip+', '+str(port))
+    print('Listening on IP: '+host+', '+port)
 
     while 1:
         #accept the connection request
         server.s.accept()
+        print("Connection accepted")
 
         #recieve message from client using client_message = server.recv(1024)
         data = server.recv(1024)
+        print("recieving data")
         #Add the data to the client message
         client_message = data
         data = server.recv(1024)
@@ -36,7 +41,7 @@ def server_main(server=socket):
             #recieve the data
             data = server.recv(1024)
 
-
+        print("decoding data")
         #decode server message using client_message.decode()
         client_message.decode()
 
@@ -50,14 +55,17 @@ def server_main(server=socket):
         #   Note: look at os library for file management functions??
         #   Note: look at shutil library for file copying??
         if cmd[0] == 'copy':
+            #maybe append current directory onto front of filenames
             server_message = copy(cmd[1])
             print(server_message)
             server.send(server_message.encode())
         elif cmd[0] == 'rename':
+            #maybe append current directory onto front of filenames
             server_message = rename(cmd[1], cmd[2])
             print(server_message)
             server.send(server_message.encode())
         elif cmd[0] == 'delete':
+            #maybe append current directory onto front of filenames
             server_message = delete(cmd[1])
             print(server_message)
             server.send(server_message.encode())
