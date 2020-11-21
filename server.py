@@ -20,7 +20,6 @@ def server_main(server=socket):
     server.listen(1000000)
     print('Listening on IP: ' + host + ', ' + str(port) + '\n')
 
-
     while 1:
         # accept the connection request
         conn, addr = server.accept()
@@ -41,7 +40,7 @@ def server_main(server=socket):
         #   Note: look at os library for file management functions??
         #   Note: look at shutil library for file copying??
         userInput = cmd.split(' ')
-        
+
         if userInput[0] == 'copy':
             # maybe append current directory onto front of filenames
             print('Attempting to copy file' + userInput[1] + '...')
@@ -63,7 +62,7 @@ def server_main(server=socket):
         elif userInput[0] == 'done':
             print('Client has requested to close connection...')
             server_message = 'done'
-            #print(server_message)
+            # print(server_message)
             conn.send(bytes(server_message, "utf-8"))
             # shutdown connection with client
             print('Closing connection with client')
@@ -77,6 +76,36 @@ def server_main(server=socket):
         # close server socket
         conn.close()
         print("Re-establising connection")
+
+
+# Function to parse a message
+def parse_message(data):
+    request = []
+    data.decode("utf-8")
+    msg = data.replace('\n', '')
+    message = msg.split('\r')
+
+    if message[0] == '1':
+        if message[1] == '1':
+            request.append('Connection request')
+    elif message[0] == '2':
+        if message[1] == '3':
+            request.append('list')
+        elif message[1] == '4':
+            request.append('copy')
+            request.append(message[2])
+        elif message[1] == '5':
+            request.append('rename')
+            filenames = message[2].split(',')
+            request.append(filenames[0])
+            request.append(filenames[1])
+        elif message[1] == '6':
+            request.append('delete')
+            request.append(message[2])
+        elif message[1] == '7':
+            request.append('done')
+
+    return message
 
 
 # Function to copy a file
@@ -106,29 +135,28 @@ def rename(filename1, filename2):
     fullpath2 = currWorkingDir + "/" + filename2
     print(fullpath1)
     print(fullpath2)
-    
+
     if os.path.exists(fullpath1):
         if os.path.exists(fullpath2):
             return 'ERROR: File ' + filename2 + ' already exists!'
         else:
-            #rename file
+            # rename file
             os.rename(fullpath1, fullpath2)
             return "File Rename Success"
     else:
         return "ERROR: File " + filename1 + " does not exist!"
- 
+
+
 # Function to delete a file
 def delete(filename):
     currWorkingDir = os.getcwd()
     fullpath = currWorkingDir + "/" + filename
     print(fullpath)
     if os.path.exists(fullpath):
-      os.remove(fullpath)
-      return "File delete success"
+        os.remove(fullpath)
+        return "File delete success"
     else:
-      return "ERROR: File " + filename + " does not exist!"
-      
-    
+        return "ERROR: File " + filename + " does not exist!"
 
 
 # Function to get the list of files from the directory

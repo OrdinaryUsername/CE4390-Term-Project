@@ -7,9 +7,9 @@ def client_main():
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     target_ip = '10.0.0.1'
-    
+
     target_port = 49159
- 
+
     # accepted cmds for input
     acceptedCmds = ['list', 'copy', 'rename', 'delete', 'done']
 
@@ -45,7 +45,6 @@ def client_main():
         else:
             print('Please enter valid command!')
 
-    
         # shut down the connection
         # close the socket
         client.close()
@@ -53,11 +52,35 @@ def client_main():
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     # shut down the connection
-    #client.shutdown(socket.SHUT_RDWR)
+    # client.shutdown(socket.SHUT_RDWR)
     print("shutdown")
     # close the socket
     client.close()
     print("close")
+
+
+def parse_message(data):
+    data.decode("utf-8")
+    msg = data.replace('\n', '')
+    message = msg.split('\r')
+
+    if message[0] == '1':
+        if message[1] == '2':
+            response = 'Connection accepted'
+    elif message[0] == '3':
+        if message[1] == '11':
+            response = 'Command success'
+    elif message[0] == '4':
+        if message[1] == '8':
+            filename1 = message[2]
+            response = 'ERROR: File ' + filename1 + ' does not exist!'
+        elif message[1] == '9':
+            filename1 = message[2]
+            response = 'ERROR: File name ' + filename1 + ' already exists!'
+        elif message[1] == '10':
+            filename1 = message[2]
+            response = 'ERROR: ' + filename1 + ' is an invalid filename!'
+    return response
 
 
 # use client_main() as the main function
