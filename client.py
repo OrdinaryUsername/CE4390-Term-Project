@@ -47,14 +47,14 @@ def client_main():
 
     
         # shut down the connection
-        client.shutdown(socket.SHUT_RDWR)
+        #client.shutdown(socket.SHUT_RDWR)
         # close the socket
         client.close()
         # open the socket
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     # shut down the connection
-    client.shutdown(socket.SHUT_RDWR)
+    #client.shutdown(socket.SHUT_RDWR)
     print("shutdown")
     # close the socket
     client.close()

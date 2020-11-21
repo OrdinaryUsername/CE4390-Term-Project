@@ -72,17 +72,17 @@ def server_main(server=socket):
             conn.send(bytes(server_message, "utf-8"))
             # shutdown connection with client
             print('Closing connection with client')
-            conn.shutdown(socket.SHUT_RDWR)
+            #conn.shutdown(socket.SHUT_RDWR)
             # close server socket
             print('Shutting down server...')
             conn.close()
             break
 
         # shutdown connection with client
-        conn.shutdown(socket.SHUT_RDWR)
+        #conn.shutdown(socket.SHUT_RDWR)
         print("Closing connection with client...")
         # close server socket
-        #conn.close()
+        conn.close()
         print("Re-establising connection")
 
 
@@ -92,14 +92,11 @@ def copy(filename):
     fullpath = currWorkingDir + "/" + filename
     newfileName = filename + '(1)'
     newLocation = currWorkingDir + "/" + newfileName
-    shutil.copy2(fullpath, newLocation)
-    copyfullpath = newLocation
-    print(fullpath)
-    if path.exists(copyfullpath):
+    if os.path.exists(fullpath):
+        shutil.copy2(fullpath, newLocation)
         return "File Copy Success"
     else:
         return "Error: File Copy Failed"
-    print(fullpath)
 
 
 # Function to rename a file
@@ -109,18 +106,15 @@ def rename(filename1, filename2):
     fullpath2 = currWorkingDir + "/" + filename2
     print(fullpath1)
     print(fullpath2)
-
-    #rename file
-    os.rename(fullpath1, fullpath2)
-
-    #check for existence of new filename
-    if path.exists(fullpath2):
-        return "File Rename Success"
-    else:
-        return "Error: File Rename Failed"
-    # return messages about success
-
-
+    
+    if os.path.exists(fullpath1):
+        if os.path.exists(fullpath2):
+            return 'ERROR: File ' + filename2 + 'already exists!'
+        else 
+            #rename file
+            os.rename(fullpath1, fullpath2)
+            return "File Rename Success"
+ 
 # Function to delete a file
 def delete(filename):
     currWorkingDir = os.getcwd()
