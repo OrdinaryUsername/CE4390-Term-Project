@@ -19,7 +19,7 @@ def client_main():
         packet = packetFormat('Request Connection')
         client.send(bytes(packet, "utf-8"))
         data = client.recv(1024)
-        print(parse_message(data))
+        print(parse_message(data.decode("utf-8")))
         print(' ')
         print("Connected to server")
         print(' ')
@@ -95,39 +95,39 @@ def packetFormat(str):
     if(str == 'Request Connection'):
         messageType = '1'
         messageCode = '1'
-        filenames = None
+        filenames = ''
         messageLength = '10'
-        payload = None
+        payload = ''
     elif op[0] == 'list':
         messageType = '2'
         messageCode = '3'
-        filenames = None
+        filenames = ''
         messageLength = '10'
-        payload = None
+        payload = ''
     elif op[0] == 'copy':
         messageType = '2'
         messageCode = '4'
         filenames = op[1]
         messageLength = str(10 + len(op[1]))
-        payload = None
+        payload = ''
     elif op[0] == 'rename':
         messageType = '2'
         messageCode = '5'
         filenames = op[1]
         messageLength = str(10 + len(op[1]))
-        payload = None
+        payload = ''
     elif op[0] == 'delete':
         messageType = '2'
         messageCode = '6'
         filenames = op[1]
         messageLength = str(10 + len(op[1]))
-        payload = None
+        payload = ''
     elif op[0] == 'done':
         messageType = '2'
         messageCode = '7'
         filenames = op[1]
         messageLength = str(10 + len(op[1]))
-        payload = None
+        payload = ''
         
     return (messageType + '\r' + messageCode + '\r\n' + filenames + '\r' + messageLength + '\r\n\r\n' + payload)
 # use client_main() as the main function
