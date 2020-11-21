@@ -93,40 +93,40 @@ def packetFormat(str):
     op = str.split(' ')
     
     if(str == 'Request Connection'):
-        messageType = 1
-        messageCode = 1
+        messageType = '1'
+        messageCode = '1'
         filenames = None
-        messageLength = 10
+        messageLength = '10'
         payload = None
     elif op[0] == 'list':
-        messageType = 2
-        messageCode = 3
+        messageType = '2'
+        messageCode = '3'
         filenames = None
-        messageLength = 10
+        messageLength = '10'
         payload = None
     elif op[0] == 'copy':
-        messageType = 2
-        messageCode = 4
+        messageType = '2'
+        messageCode = '4'
         filenames = op[1]
-        messageLength = 10 + len(op[1])
+        messageLength = str(10 + len(op[1]))
         payload = None
     elif op[0] == 'rename':
-        messageType = 2
-        messageCode = 5
+        messageType = '2'
+        messageCode = '5'
         filenames = op[1]
-        messageLength = 10 + len(op[1])
+        messageLength = str(10 + len(op[1]))
         payload = None
     elif op[0] == 'delete':
-        messageType = 2
-        messageCode = 6
+        messageType = '2'
+        messageCode = '6'
         filenames = op[1]
-        messageLength = 10 + len(op[1])
+        messageLength = str(10 + len(op[1]))
         payload = None
     elif op[0] == 'done':
-        messageType = 2
-        messageCode = 7
+        messageType = '2'
+        messageCode = '7'
         filenames = op[1]
-        messageLength = 10 + len(op[1])
+        messageLength = str(10 + len(op[1]))
         payload = None
         
     return (messageType + '\r' + messageCode + '\r\n' + filenames + '\r' + messageLength + '\r\n\r\n' + payload)
