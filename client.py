@@ -16,6 +16,10 @@ def client_main():
     # listen
     while 1:
         client.connect((target_ip, target_port))
+        packet = packetFormat('Request Connection')
+        client.send(bytes(packet, "utf-8"))
+        data = client.recv(1024)
+        print(parse_message(data))
         print(' ')
         print("Connected to server")
         print(' ')
@@ -36,10 +40,12 @@ def client_main():
         # Checks if user input matches
         if (cmdCheck[0] in acceptedCmds):
             if (cmd == 'done'):
-                client.send(bytes(cmd, "utf-8"))
+                packet == packetFormat(cmd)
+                client.send(bytes(packet, "utf-8"))
                 break
             else:
-                client.send(bytes(cmd, "utf-8"))
+                packet == packetFormat(cmd)
+                client.send(bytes(packet, "utf-8"))
                 data = client.recv(1024)
                 print(data.decode("utf-8"))
         else:
@@ -82,6 +88,47 @@ def parse_message(data):
             response = 'ERROR: ' + filename1 + ' is an invalid filename!'
     return response
 
-
+def packetFormat(str):
+    
+    op = str.split(' ')
+    
+    if(str == 'Request Connection'):
+        messageType = 1
+        messageCode = 1
+        filenames = None
+        messageLength = 10
+        payload = None
+    elif op[0] == 'list':
+        messageType = 2
+        messageCode = 3
+        filenames = None
+        messageLength = 10
+        payload = None
+    elif op[0] == 'copy':
+        messageType = 2
+        messageCode = 4
+        filenames = op[1]
+        messageLength = 10 + len(op[1])
+        payload = None
+    elif op[0] == 'rename':
+        messageType = 2
+        messageCode = 5
+        filenames = op[1]
+        messageLength = 10 + len(op[1])
+        payload = None
+    elif op[0] == 'delete':
+        messageType = 2
+        messageCode = 6
+        filenames = op[1]
+        messageLength = 10 + len(op[1])
+        payload = None
+    elif op[0] == 'done':
+        messageType = 2
+        messageCode = 7
+        filenames = op[1]
+        messageLength = 10 + len(op[1])
+        payload = None
+        
+    return (messageType + '\r' + messageCode + '\r\n' + filenames + '\r' + messageLength + '\r\n\r\n' + payload)
 # use client_main() as the main function
 if __name__ == "__main__": client_main()
