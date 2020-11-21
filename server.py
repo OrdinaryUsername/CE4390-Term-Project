@@ -9,24 +9,20 @@ def server_main(server=socket):
     print('------------------------------------------------------------------')
     # create and initialize server socket
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # get the server's ip address
-    # ip = socket.gethostbyname(socket.gethostname())
-    #host = socket.gethostbyname(socket.gethostname())
+    # set the server's ip address
     host = '10.0.0.1'
     print('Server Host name: ' + socket.gethostname())
-    # ip = input("Enter IP Address: ")
-    # get the port number for the host
-    #port = int(input('Enter desired port: '))
+    # set the port number for the host
     port = 49159
     # bind the socket using the ip address and port number
     server.bind((host, port))
     # listen for connection requests
     server.listen(1000000)
-
     print('Listening on IP: ' + host + ', ' + str(port) + '\n')
-    # accept the connection request
+
 
     while 1:
+        # accept the connection request
         conn, addr = server.accept()
         print("Connection accepted")
         # recieve message from client using client_message = server.recv(1024)
@@ -35,8 +31,7 @@ def server_main(server=socket):
         # decode server message using client_message.decode()
         cmd = data.decode("utf-8")
         print("Decoding data....")
-        #cmd = data.split(' ')
-        #print(cmd[0])
+
         if cmd == 'list':
             print('Client requesting file directory...')
             server_message = ld()
@@ -72,14 +67,12 @@ def server_main(server=socket):
             conn.send(bytes(server_message, "utf-8"))
             # shutdown connection with client
             print('Closing connection with client')
-            #conn.shutdown(socket.SHUT_RDWR)
             # close server socket
             print('Shutting down server...')
             conn.close()
             break
 
         # shutdown connection with client
-        #conn.shutdown(socket.SHUT_RDWR)
         print("Closing connection with client...")
         # close server socket
         conn.close()
@@ -90,13 +83,20 @@ def server_main(server=socket):
 def copy(filename):
     currWorkingDir = os.getcwd()
     fullpath = currWorkingDir + "/" + filename
-    newfileName = filename + '(1)'
+    fname = filename.split('.')
+    newfileName = fname[0] + '(1).' + fname[1]
+
+    i = 1
+    while os.path.exists(newfileName):
+        newfileName = fname[0] + '(' + str(i) + ').' + fname[1]
+        i = i + 1
+
     newLocation = currWorkingDir + "/" + newfileName
     if os.path.exists(fullpath):
         shutil.copy2(fullpath, newLocation)
         return "File Copy Success"
     else:
-        return "Error: File Copy Failed"
+        return "Error: File " + filename + " does not exist!"
 
 
 # Function to rename a file
@@ -109,11 +109,13 @@ def rename(filename1, filename2):
     
     if os.path.exists(fullpath1):
         if os.path.exists(fullpath2):
-            return 'ERROR: File ' + filename2 + 'already exists!'
-        else 
+            return 'ERROR: File ' + filename2 + ' already exists!'
+        else:
             #rename file
             os.rename(fullpath1, fullpath2)
             return "File Rename Success"
+    else:
+        return "ERROR: File " + filename1 + " does not exist!"
  
 # Function to delete a file
 def delete(filename):
@@ -124,7 +126,7 @@ def delete(filename):
       os.remove(fullpath)
       return "File delete success"
     else:
-      return "The file does not exist"
+      return "ERROR: File " + filename + " does not exist!"
       
     
 

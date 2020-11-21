@@ -22,9 +22,9 @@ def client_main():
         print('------------------------------------------------------------------')
         print('Instruction List:')
         print('"list" lists file directory on server.')
-        print('"copy[filename]" retrieves a copy of a file from the server.')
-        print('"rename[filename, newFileName]" renames a file from the server.')
-        print('"delete[filename]" deletes a file on the server.')
+        print('"copy <filename>" creates a copy of a file on the server.')
+        print('"rename <original_filename>, <new_filename>" renames a file from the server.')
+        print('"delete <filename>" deletes a file on the server.')
         print('"done" quits program.')
         print('------------------------------------------------------------------')
         print(' ')
@@ -47,7 +47,6 @@ def client_main():
 
     
         # shut down the connection
-        #client.shutdown(socket.SHUT_RDWR)
         # close the socket
         client.close()
         # open the socket
