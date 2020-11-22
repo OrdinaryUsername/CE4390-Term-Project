@@ -1,5 +1,5 @@
 import socket
-import shutil
+# import shutil
 
 
 def client_main():
@@ -11,17 +11,17 @@ def client_main():
     target_port = 49159
 
     # accepted cmds for input
-    acceptedCmds = ['list', 'copy', 'rename', 'delete', 'done']
+    accepted_cmds = ['list', 'copy', 'rename', 'delete', 'done']
 
     # listen
     while 1:
+        print(' ')
+        print('Requesting connection with server...')
         client.connect((target_ip, target_port))
-        packet = packetFormat('Request Connection')
+        packet = message_format('Request Connection')
         client.send(bytes(packet, "utf-8"))
         data = client.recv(1024)
-        print(parse_message(data.decode("utf-8")))
-        print(' ')
-        print("Connected to server")
+        print(parse_message(data))
         print(' ')
         print('------------------------------------------------------------------')
         print('Instruction List:')
@@ -36,24 +36,26 @@ def client_main():
         cmd = input('Enter a command: ')
         print(' ')
         # Split cmd for check
-        cmdCheck = cmd.split(' ')
+        cmd_check = cmd.split(' ')
         # Checks if user input matches
-        if (cmdCheck[0] in acceptedCmds):
-            if (cmd == 'done'):
-                packet == packetFormat(cmd)
+        if cmd_check[0] in accepted_cmds:
+            if cmd == 'done':
+                packet = message_format(cmd)
                 client.send(bytes(packet, "utf-8"))
                 break
             else:
-                packet == packetFormat(cmd)
+                packet = message_format(cmd)
                 client.send(bytes(packet, "utf-8"))
                 data = client.recv(1024)
-                print(data.decode("utf-8"))
+                print(parse_message(data))
         else:
             print('Please enter valid command!')
 
         # shut down the connection
         # close the socket
+        print("Closing connection with server...")
         client.close()
+        print("Connection with server closed.")
         # open the socket
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -66,9 +68,11 @@ def client_main():
 
 
 def parse_message(data):
-    data.decode("utf-8")
-    msg = data.replace('\n', '')
-    message = msg.split('\r')
+    decoded_data = data.decode("utf-8")
+    msg = decoded_data.replace('\r', '')
+    message = msg.split('\n')
+
+    response = "ERROR: message type and code are not valid"
 
     if message[0] == '1':
         if message[1] == '2':
@@ -76,6 +80,8 @@ def parse_message(data):
     elif message[0] == '3':
         if message[1] == '11':
             response = 'Command success'
+        elif message[1] == '12':
+            response = message[5]
     elif message[0] == '4':
         if message[1] == '8':
             filename1 = message[2]
@@ -86,49 +92,59 @@ def parse_message(data):
         elif message[1] == '10':
             filename1 = message[2]
             response = 'ERROR: ' + filename1 + ' is an invalid filename!'
+
     return response
 
-def packetFormat(str):
-    
-    op = str.split(' ')
-    
-    if(str == 'Request Connection'):
-        messageType = '1'
-        messageCode = '1'
+
+def message_format(message):
+    op = message.split(' ')
+
+    if message == 'Request Connection':
+        mtype = '1'
+        code = '1'
         filenames = ''
-        messageLength = '10'
         payload = ''
+        length = str(len(mtype + '\n' + code + '\r\n' + filenames + '\n' + '\r\n\r\n' + payload))
     elif op[0] == 'list':
-        messageType = '2'
-        messageCode = '3'
+        mtype = '2'
+        code = '3'
         filenames = ''
-        messageLength = '10'
         payload = ''
+        length = str(len(mtype + '\n' + code + '\r\n' + filenames + '\n' + '\r\n\r\n' + payload))
     elif op[0] == 'copy':
-        messageType = '2'
-        messageCode = '4'
+        mtype = '2'
+        code = '4'
         filenames = op[1]
-        messageLength = str(10 + len(op[1]))
         payload = ''
+        length = str(len(mtype + '\n' + code + '\r\n' + filenames + '\n' + '\r\n\r\n' + payload))
     elif op[0] == 'rename':
-        messageType = '2'
-        messageCode = '5'
-        filenames = op[1]
-        messageLength = str(10 + len(op[1]))
+        mtype = '2'
+        code = '5'
+        filenames = op[1] + op[2]
+        filenames.replace(', ', ',')
         payload = ''
+        length = str(len(mtype + '\n' + code + '\r\n' + filenames + '\n' + '\r\n\r\n' + payload))
     elif op[0] == 'delete':
-        messageType = '2'
-        messageCode = '6'
+        mtype = '2'
+        code = '6'
         filenames = op[1]
-        messageLength = str(10 + len(op[1]))
         payload = ''
+        length = str(len(mtype + '\n' + code + '\r\n' + filenames + '\n' + '\r\n\r\n' + payload))
     elif op[0] == 'done':
-        messageType = '2'
-        messageCode = '7'
-        filenames = op[1]
-        messageLength = str(10 + len(op[1]))
+        mtype = '2'
+        code = '7'
+        filenames = ''
         payload = ''
-        
-    return (messageType + '\r' + messageCode + '\r\n' + filenames + '\r' + messageLength + '\r\n\r\n' + payload)
+        length = str(len(mtype + '\n' + code + '\r\n' + filenames + '\n' + '\r\n\r\n' + payload))
+    else:
+        mtype = ''
+        code = ''
+        filenames = ''
+        payload = ''
+        length = str(len(mtype + '\n' + code + '\r\n' + filenames + '\n' + '\r\n\r\n' + payload))
+    return mtype + '\n' + code + '\r\n' + filenames + '\n' + length + '\r\n\r\n' + payload
+
+
 # use client_main() as the main function
-if __name__ == "__main__": client_main()
+if __name__ == "__main__":
+    client_main()
